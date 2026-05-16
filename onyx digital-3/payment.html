@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#fbfbfd">
+<title>תשלום — Onyx Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbfbfd;--bg-section:#f5f5f7;
+  --text:#1d1d1f;--text-2:#424245;--text-3:#6e6e73;
+  --line:rgba(0,0,0,.08);--line-2:rgba(0,0,0,.13);
+  --gold:#C7AE6A;--gold-deep:#A3834E;--gold-light:#D8C987;
+  --gold-tint:rgba(199,174,106,.08);--gold-tint-2:rgba(199,174,106,.18);
+  --font-en:'Inter',-apple-system,sans-serif;
+  --font-he:'Heebo','Inter',sans-serif;
+  --max:1100px;--pad-x:max(22px,5vw);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-he);background:var(--bg);color:var(--text);line-height:1.5;direction:rtl;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select{font:inherit}
+*:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(251,251,253,.78);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.05);height:56px}
+.nav-inner{max-width:1440px;margin:0 auto;height:100%;padding:0 var(--pad-x);display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.nav-logo{display:flex;align-items:center;gap:.55rem;font-family:var(--font-en);font-weight:700;font-size:.92rem}
+.nav-logo-mark{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--gold-deep),var(--gold),var(--gold-light));display:grid;place-items:center;color:#000;font-weight:900;font-size:.7rem;letter-spacing:.05em;box-shadow:0 1px 3px rgba(199,174,106,.4)}
+.nav-back{font-size:.85rem;color:var(--text-3)}
+.nav-back:hover{color:var(--text)}
+
+.hero-page{padding:8rem var(--pad-x) 3rem;text-align:center;background:linear-gradient(180deg,#fff 0%,#fbfbfd 50%,#f5f5f7 100%);position:relative}
+.hero-page::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--line-2),transparent)}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:.6rem;font-family:var(--font-en);font-size:.72rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:1.2rem;padding:.45rem 1rem;border:1px solid var(--gold-tint-2);border-radius:980px;background:var(--gold-tint)}
+.hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(199,174,106,.18)}
+h1.title{font-family:var(--font-he);font-size:clamp(2.4rem,6vw,4.6rem);font-weight:800;line-height:1;letter-spacing:-.035em;margin-bottom:1rem}
+.title .gold{background:linear-gradient(135deg,var(--gold-deep),var(--gold),var(--gold-light));-webkit-background-clip:text;background-clip:text;color:transparent}
+.subtitle{font-size:clamp(1rem,1.5vw,1.2rem);color:var(--text-2);max-width:600px;margin:0 auto}
+
+main{padding:3rem var(--pad-x) 5rem;max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:1.6fr 1fr;gap:1.6rem;align-items:start}
+@media(max-width:880px){main{grid-template-columns:1fr}}
+
+.panel{background:#fff;border:1px solid var(--line);border-radius:24px;padding:2.5rem;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+@media(max-width:600px){.panel{padding:1.6rem;border-radius:20px}}
+
+.section-head{margin-bottom:1.6rem}
+.section-head h2{font-family:var(--font-he);font-size:1.4rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.3rem}
+.section-head p{font-size:.85rem;color:var(--text-3)}
+
+.methods{display:flex;flex-direction:column;gap:.7rem;margin-bottom:1.6rem}
+.method{display:flex;align-items:center;gap:1rem;padding:1.1rem 1.2rem;border:1.5px solid var(--line);border-radius:14px;cursor:pointer;transition:all .25s;background:#fff}
+.method:hover{border-color:var(--gold);transform:translateY(-1px)}
+.method.active{border-color:var(--gold);background:var(--gold-tint);box-shadow:0 4px 12px rgba(199,174,106,.12)}
+.method-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--line-2);flex-shrink:0;transition:all .25s}
+.method.active .method-radio{border-color:var(--gold);background:var(--gold);box-shadow:inset 0 0 0 4px #fff}
+.method-icon{width:48px;height:32px;border-radius:6px;display:grid;place-items:center;font-family:var(--font-en);font-weight:700;font-size:.7rem;letter-spacing:.04em;color:#fff;flex-shrink:0}
+.method-icon.card{background:linear-gradient(135deg,#1d1d1f,#000)}
+.method-icon.bit{background:linear-gradient(135deg,#0084ff,#005ce6)}
+.method-icon.paybox{background:linear-gradient(135deg,#00b3a6,#008c80)}
+.method-icon.transfer{background:linear-gradient(135deg,var(--gold-deep),var(--gold))}
+.method-text{flex:1}
+.method-text strong{display:block;font-size:.95rem;font-weight:600;color:var(--text);margin-bottom:.15rem}
+.method-text span{font-size:.78rem;color:var(--text-3);line-height:1.4}
+.method-tag{font-family:var(--font-en);font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep);background:var(--gold-tint-2);padding:.22rem .55rem;border-radius:980px}
+
+.card-form{display:none;flex-direction:column;gap:1.1rem;padding:1.4rem;background:var(--bg-section);border-radius:14px;margin-top:1rem}
+.card-form.active{display:flex}
+.field{display:flex;flex-direction:column;gap:.4rem}
+.field label{font-size:.78rem;font-weight:500;color:var(--text-2)}
+.field input{background:#fff;border:1px solid var(--line-2);border-radius:10px;padding:.8rem 1rem;font-size:.95rem;transition:border-color .2s,box-shadow .2s}
+.field input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px var(--gold-tint)}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+.app-info{display:none;padding:1.4rem;background:var(--bg-section);border-radius:14px;margin-top:1rem;font-size:.88rem;line-height:1.6}
+.app-info.active{display:block}
+.app-info strong{color:var(--text)}
+.app-info ol{padding-right:1.4rem;color:var(--text-2);margin:.5rem 0}
+.app-info li{margin-bottom:.4rem}
+.app-info .copy-row{display:flex;align-items:center;gap:.6rem;background:#fff;border:1px solid var(--line-2);border-radius:10px;padding:.6rem 1rem;margin-top:.8rem;font-family:var(--font-en);font-weight:600}
+.copy-btn{background:var(--text);color:#fff;padding:.4rem .8rem;border-radius:8px;font-size:.72rem;font-weight:500}
+
+/* COUPON BLOCK */
+.coupon-block{margin-top:1.4rem;padding:1.2rem;border:1px dashed var(--gold-tint-2);background:linear-gradient(180deg,var(--gold-tint),transparent);border-radius:14px}
+.coupon-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;cursor:pointer}
+.coupon-head h3{font-size:.95rem;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:.5rem}
+.coupon-head h3 svg{width:16px;height:16px;color:var(--gold-deep)}
+.coupon-toggle{font-size:.78rem;color:var(--gold-deep);font-weight:600}
+.coupon-row{display:none;gap:.6rem;margin-top:.6rem}
+.coupon-row.open{display:flex}
+.coupon-row input{flex:1;background:#fff;border:1px solid var(--line-2);border-radius:10px;padding:.7rem 1rem;font-size:.9rem;letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-en);font-weight:600}
+.coupon-row input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px var(--gold-tint)}
+.coupon-row button{background:var(--text);color:#fff;padding:0 1.2rem;border-radius:10px;font-size:.85rem;font-weight:600;white-space:nowrap;transition:background .2s}
+.coupon-row button:hover{background:#000}
+.coupon-feedback{font-size:.8rem;margin-top:.6rem;font-weight:500;display:none}
+.coupon-feedback.success{display:block;color:#0c7d3a}
+.coupon-feedback.error{display:block;color:#c0392b}
+
+/* SUMMARY */
+.summary{position:sticky;top:80px}
+.sum-row{display:flex;justify-content:space-between;align-items:flex-start;padding:.7rem 0;border-bottom:1px solid var(--line);gap:1rem}
+.sum-row:last-of-type{border-bottom:none}
+.sum-label{font-size:.82rem;color:var(--text-3)}
+.sum-val{font-size:.88rem;font-weight:500;color:var(--text);text-align:left;flex:1}
+.sum-discount{color:#0c7d3a !important;font-weight:600 !important}
+.sum-total{margin-top:1rem;padding-top:1.2rem;border-top:2px solid var(--text);display:flex;justify-content:space-between;align-items:baseline}
+.sum-total-label{font-size:1rem;font-weight:600}
+.sum-total-val{font-family:var(--font-en);font-size:1.8rem;font-weight:700;letter-spacing:-.02em}
+.sum-total-was{text-decoration:line-through;color:var(--text-3);font-size:.95rem;margin-left:.5rem;font-weight:400}
+
+.btn-pay{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;padding:1.1rem;background:var(--text);color:#fff;border-radius:980px;font-size:.95rem;font-weight:500;margin-top:1.6rem;transition:transform .25s,background .25s,box-shadow .25s}
+.btn-pay:hover{background:#000;transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.18)}
+.btn-pay svg{width:16px;height:16px}
+
+.terms-check{display:flex;gap:.6rem;align-items:flex-start;margin-top:1.2rem;font-size:.78rem;color:var(--text-2);line-height:1.55}
+.terms-check input{margin-top:.18rem;width:16px;height:16px;accent-color:var(--gold-deep);cursor:pointer}
+.terms-check a{color:var(--gold-deep);font-weight:600;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+
+.trust-row{display:flex;align-items:center;gap:.5rem;justify-content:center;font-size:.72rem;color:var(--text-3);margin-top:1rem;flex-wrap:wrap}
+.trust-row svg{width:14px;height:14px;color:var(--gold-deep)}
+
+footer{background:var(--bg-section);padding:2rem var(--pad-x);text-align:center;font-size:.78rem;color:var(--text-3);border-top:1px solid var(--line)}
+footer a{color:var(--text-3)}
+footer a:hover{color:var(--text)}
+
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:2000;padding:1.5rem}
+.modal.active{display:flex}
+.modal-card{background:#fff;border-radius:24px;padding:3rem 2rem;max-width:480px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.4);animation:pop .4s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.modal-icon{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,var(--gold-deep),var(--gold),var(--gold-light));display:grid;place-items:center;margin:0 auto 1.5rem;color:#000;font-size:2rem}
+.modal-card h3{font-size:1.6rem;font-weight:800;margin-bottom:.5rem;letter-spacing:-.02em}
+.modal-card p{color:var(--text-2);margin-bottom:1.5rem;line-height:1.5}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-mark">OD</span>
+      <span>Onyx Digital</span>
+    </a>
+    <a href="order.html" class="nav-back">← חזרה להזמנה</a>
+  </div>
+</header>
+
+<section class="hero-page">
+  <div class="hero-eyebrow">תשלום מאובטח · 256-bit SSL</div>
+  <h1 class="title">בחר את <span class="gold">דרך התשלום</span>.</h1>
+  <p class="subtitle">תשלום מאובטח. פרטיך לעולם לא נשמרים אצלנו.</p>
+</section>
+
+<main>
+
+  <div class="panel">
+    <div class="section-head">
+      <h2>אמצעי תשלום</h2>
+      <p>בחר את האמצעי הנוח לך — אפשר לשלם גם מהפלאפון.</p>
+    </div>
+
+    <div class="methods" role="radiogroup" aria-label="בחירת אמצעי תשלום">
+
+      <label class="method active" data-method="card" tabindex="0">
+        <span class="method-radio" aria-hidden="true"></span>
+        <span class="method-icon card">CARD</span>
+        <span class="method-text">
+          <strong>כרטיס אשראי</strong>
+          <span>Visa · Mastercard · American Express · עד 12 תשלומים</span>
+        </span>
+        <input type="radio" name="method" value="card" checked hidden>
+      </label>
+
+      <label class="method" data-method="bit" tabindex="0">
+        <span class="method-radio" aria-hidden="true"></span>
+        <span class="method-icon bit">bit</span>
+        <span class="method-text">
+          <strong>Bit</strong>
+          <span>תשלום מיידי דרך אפליקציית bit · ללא עמלה</span>
+        </span>
+        <span class="method-tag">פופולרי</span>
+        <input type="radio" name="method" value="bit" hidden>
+      </label>
+
+      <label class="method" data-method="paybox" tabindex="0">
+        <span class="method-radio" aria-hidden="true"></span>
+        <span class="method-icon paybox">PAY</span>
+        <span class="method-text">
+          <strong>PayBox</strong>
+          <span>תשלום מיידי דרך אפליקציית PayBox</span>
+        </span>
+        <input type="radio" name="method" value="paybox" hidden>
+      </label>
+
+      <label class="method" data-method="transfer" tabindex="0">
+        <span class="method-radio" aria-hidden="true"></span>
+        <span class="method-icon transfer">BNK</span>
+        <span class="method-text">
+          <strong>העברה בנקאית</strong>
+          <span>לעסקים בלבד · קבלה לחשבונית</span>
+        </span>
+        <input type="radio" name="method" value="transfer" hidden>
+      </label>
+
+    </div>
+
+    <!-- CARD FORM -->
+    <div class="card-form active" data-form="card">
+      <div class="field">
+        <label for="cardName">שם בעל הכרטיס</label>
+        <input id="cardName" type="text" autocomplete="off" name="x-cn" placeholder="כפי שמופיע על הכרטיס">
+      </div>
+      <div class="field">
+        <label for="cardNum">מספר כרטיס</label>
+        <input id="cardNum" type="text" inputmode="numeric" autocomplete="off" name="x-num" placeholder="0000 0000 0000 0000" maxlength="19">
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="cardExp">תוקף</label>
+          <input id="cardExp" type="text" inputmode="numeric" autocomplete="off" name="x-ex" placeholder="MM/YY" maxlength="5">
+        </div>
+        <div class="field">
+          <label for="cardCvv">CVV</label>
+          <input id="cardCvv" type="text" inputmode="numeric" autocomplete="off" name="x-cv" placeholder="123" maxlength="4">
+        </div>
+      </div>
+      <div class="field">
+        <label for="cardId">תעודת זהות</label>
+        <input id="cardId" type="text" inputmode="numeric" autocomplete="off" name="x-id" placeholder="9 ספרות" maxlength="9">
+      </div>
+      <div style="display:flex;gap:.5rem;align-items:center;font-size:.74rem;color:var(--text-3);margin-top:.4rem;line-height:1.4">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--gold-deep);flex-shrink:0"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>פרטי הכרטיס נשלחים ישירות לסליקה (Cardcom/Tranzila) ולא נשמרים אצלנו לעולם. עומד בתקן PCI-DSS.</span>
+      </div>
+    </div>
+
+    <!-- BIT INFO -->
+    <div class="app-info" data-form="bit">
+      <strong>תשלום עם Bit — מהיר ופשוט:</strong>
+      <ol>
+        <li>לחץ על "שלם עכשיו" — תיפתח לך אפליקציית bit אוטומטית עם הסכום והמספר שלנו כבר מוכנים</li>
+        <li>אם זה לא נפתח, פתח ידנית את bit ושלם למספר 050-678-2329</li>
+        <li>אנחנו נקבל אישור מיידי ונתחיל לעבוד על הפרויקט שלך</li>
+      </ol>
+      <div class="copy-row">
+        <span>050-678-2329</span>
+        <button type="button" class="copy-btn" data-copy="0506782329">העתק</button>
+      </div>
+    </div>
+
+    <!-- PAYBOX INFO -->
+    <div class="app-info" data-form="paybox">
+      <strong>תשלום עם PayBox:</strong>
+      <ol>
+        <li>פתח את אפליקציית PayBox בפלאפון</li>
+        <li>בחר "העברה" → "לפי מספר טלפון"</li>
+        <li>הזן את המספר שלנו, הוסף את הסכום ושלם</li>
+      </ol>
+      <div class="copy-row">
+        <span>050-678-2329</span>
+        <button type="button" class="copy-btn" data-copy="0506782329">העתק</button>
+      </div>
+    </div>
+
+    <!-- TRANSFER INFO -->
+    <div class="app-info" data-form="transfer">
+      <strong>פרטי חשבון להעברה:</strong>
+      <ol>
+        <li>פרטי הבנק יישלחו אליך לאימייל מיד לאחר שתאשר את ההזמנה</li>
+        <li>חשבונית מס וקבלה — נשלחים תוך 24 שעות</li>
+        <li>העבודה מתחילה מיד עם קבלת אישור ההעברה</li>
+      </ol>
+      <p style="font-size:.82rem;color:var(--text-3);margin-top:.8rem">⓵ מתאים לעסקים שזקוקים לחשבונית מס · יש סנכרון מלא עם רואה החשבון שלך</p>
+    </div>
+
+    <!-- COUPON -->
+    <div class="coupon-block">
+      <div class="coupon-head" id="couponHead">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          יש לך קוד הטבה?
+        </h3>
+        <span class="coupon-toggle" id="couponToggle">+ הזן קוד</span>
+      </div>
+      <div class="coupon-row" id="couponRow">
+        <input id="couponInput" type="text" placeholder="הקלד את הקוד" autocomplete="off">
+        <button type="button" id="couponApply">הפעל</button>
+      </div>
+      <div class="coupon-feedback" id="couponFeedback"></div>
+    </div>
+
+  </div>
+
+  <!-- SUMMARY -->
+  <aside class="summary panel">
+    <div class="section-head">
+      <h2>הסכם הרכישה</h2>
+      <p>סקור את הפרטים לפני התשלום</p>
+    </div>
+
+    <div class="sum-row"><span class="sum-label">מסלול</span><span class="sum-val" id="sumPlan">Premium — המסלול המלא</span></div>
+    <div class="sum-row"><span class="sum-label">לקוח</span><span class="sum-val" id="sumCustomer">—</span></div>
+    <div class="sum-row"><span class="sum-label">עסק</span><span class="sum-val" id="sumBiz">—</span></div>
+    <div class="sum-row"><span class="sum-label">אימייל</span><span class="sum-val" id="sumEmail">—</span></div>
+    <div class="sum-row" id="sumDiscountRow" style="display:none"><span class="sum-label">קוד הטבה</span><span class="sum-val sum-discount" id="sumDiscount">—10%</span></div>
+
+    <div class="sum-total">
+      <span class="sum-total-label">סך הכל</span>
+      <span>
+        <span class="sum-total-was" id="sumTotalWas" style="display:none"></span>
+        <span class="sum-total-val" id="sumTotal">₪5,990</span>
+      </span>
+    </div>
+
+    <label class="terms-check">
+      <input type="checkbox" id="termsAgree">
+      <span>אני מאשר שקראתי את <a href="terms.html" target="_blank">תנאי השימוש</a> ואת <a href="privacy.html" target="_blank">מדיניות הפרטיות</a> ומסכים להם.</span>
+    </label>
+
+    <button type="button" id="payBtn" class="btn-pay">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1l3 6 6 .9-4.5 4.4 1 6.7L12 16l-5.5 3 1-6.7L3 7.9 9 7z"/></svg>
+      שלם עכשיו
+    </button>
+
+    <div class="trust-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6z"/></svg>
+      <span>תשלום מאובטח SSL</span>
+      <span>·</span>
+      <span>פרטיך לא נשמרים אצלנו</span>
+    </div>
+  </aside>
+
+</main>
+
+<footer>
+  <div>© 2026 Onyx Digital · <a href="https://wa.me/972506782329">050-678-2329</a> · <a href="mailto:omerdd04@gmail.com">omerdd04@gmail.com</a> · <a href="terms.html">תנאי שימוש</a> · <a href="privacy.html">פרטיות</a> · <a href="accessibility-statement.html">נגישות</a></div>
+</footer>
+
+<!-- SUCCESS MODAL -->
+<div class="modal" id="successModal" role="dialog" aria-labelledby="modalTitle">
+  <div class="modal-card">
+    <div class="modal-icon">✓</div>
+    <h3 id="modalTitle">קיבלנו את ההזמנה!</h3>
+    <p id="modalMsg">מעולה. אנחנו פותחים את הפרויקט שלך עכשיו, ונשלח לך מייל עם הצעדים הבאים תוך כמה דקות.</p>
+    <a href="index.html" class="btn-pay" style="margin-top:0">חזור לאתר</a>
+  </div>
+</div>
+
+<script>
+const BIZ_PHONE_INTL = '972506782329';   // for wa.me
+const BIZ_PHONE_LOCAL = '0506782329';
+const BIZ_EMAIL = 'omerdd04@gmail.com';
+const COUPONS = {
+  'BDIKA10BDIKA10': 0.10,
+  'בדיקה10בדיקה10': 0.10,
+  'LETS START TODAY': 0.07,
+  'LETSSTARTTODAY': 0.07,
+  'LAST OPTION': 0.10,
+  'LASTOPTION': 0.10,
+};
+
+// === SECURITY HARDENING ===
+// 1. Card fields are NEVER stored. autocomplete=off + name attribute prevents browser form-fill.
+// 2. We zero out all card fields on success / page hide / unload.
+// 3. We never write card data to localStorage or sessionStorage.
+// 4. In production: send card data ONLY directly to PCI-DSS-compliant gateway iframe (Cardcom / Tranzila),
+//    not to our own backend. The form below is a UI mock — replace with the gateway's iframe before going live.
+function clearAllCardFields(){
+  ['cardName','cardNum','cardExp','cardCvv','cardId'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){ el.value = ''; }
+  });
+}
+window.addEventListener('pagehide', clearAllCardFields);
+window.addEventListener('beforeunload', clearAllCardFields);
+
+// State
+let order = {};
+let basePrice = 5990;
+let discount = 0;
+let appliedCoupon = null;
+
+// Load order from sessionStorage
+try{
+  const raw = sessionStorage.getItem('onyx_order');
+  if(raw){
+    order = JSON.parse(raw);
+    document.getElementById('sumPlan').textContent = `${order.planTier || ''} — ${order.planName || ''}`;
+    document.getElementById('sumCustomer').textContent = (order.fullName || '—') + ' · ' + (order.phone || '');
+    document.getElementById('sumBiz').textContent = order.bizName || '—';
+    document.getElementById('sumEmail').textContent = order.email || '—';
+    basePrice = +order.price || 5990;
+  }
+}catch(e){}
+renderTotal();
+
+// Pre-fill coupon if user copied one from a popup on the homepage
+try{
+  const seenCode = sessionStorage.getItem('onyx_coupon_seen');
+  if(seenCode){
+    const upper = seenCode.toUpperCase();
+    if(COUPONS[upper] !== undefined || COUPONS[seenCode] !== undefined){
+      const couponInput = document.getElementById('couponInput');
+      couponInput.value = seenCode;
+      document.getElementById('couponRow').classList.add('open');
+      document.getElementById('couponToggle').textContent = '− סגור';
+      // Auto-apply after a beat
+      setTimeout(()=>document.getElementById('couponApply').click(), 250);
+    }
+  }
+}catch(e){}
+
+function renderTotal(){
+  const total = Math.round(basePrice * (1 - discount));
+  const totalEl = document.getElementById('sumTotal');
+  const wasEl = document.getElementById('sumTotalWas');
+  const discRow = document.getElementById('sumDiscountRow');
+  const discEl = document.getElementById('sumDiscount');
+  totalEl.textContent = '₪' + total.toLocaleString();
+  if(discount > 0){
+    wasEl.style.display = 'inline';
+    wasEl.textContent = '₪' + basePrice.toLocaleString();
+    discRow.style.display = 'flex';
+    discEl.textContent = `${appliedCoupon} (—${Math.round(discount*100)}%)`;
+  } else {
+    wasEl.style.display = 'none';
+    discRow.style.display = 'none';
+  }
+}
+
+// Coupon UI
+const couponHead = document.getElementById('couponHead');
+const couponRow = document.getElementById('couponRow');
+const couponToggle = document.getElementById('couponToggle');
+couponHead.addEventListener('click', ()=>{
+  const open = couponRow.classList.toggle('open');
+  couponToggle.textContent = open ? '− סגור' : '+ הזן קוד';
+});
+document.getElementById('couponApply').addEventListener('click', ()=>{
+  const code = document.getElementById('couponInput').value.trim().toUpperCase();
+  const fb = document.getElementById('couponFeedback');
+  if(COUPONS[code] !== undefined){
+    discount = COUPONS[code];
+    appliedCoupon = code;
+    fb.textContent = `הטבה הופעלה — ${Math.round(discount*100)}% הנחה!`;
+    fb.className = 'coupon-feedback success';
+    renderTotal();
+  } else if(COUPONS[document.getElementById('couponInput').value.trim()] !== undefined){
+    const k = document.getElementById('couponInput').value.trim();
+    discount = COUPONS[k];
+    appliedCoupon = k;
+    fb.textContent = `הטבה הופעלה — ${Math.round(discount*100)}% הנחה!`;
+    fb.className = 'coupon-feedback success';
+    renderTotal();
+  } else {
+    discount = 0;
+    appliedCoupon = null;
+    fb.textContent = 'קוד לא תקין או פג תוקף.';
+    fb.className = 'coupon-feedback error';
+    renderTotal();
+  }
+});
+
+// Method picker
+const methods = document.querySelectorAll('.method');
+const forms = document.querySelectorAll('[data-form]');
+methods.forEach(m=>{
+  const handler = ()=>{
+    methods.forEach(x=>x.classList.remove('active'));
+    m.classList.add('active');
+    m.querySelector('input').checked = true;
+    forms.forEach(f=>f.classList.toggle('active', f.dataset.form === m.dataset.method));
+  };
+  m.addEventListener('click', handler);
+  m.addEventListener('keydown', e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();handler()}});
+});
+
+// Card formatting
+const cardNum = document.getElementById('cardNum');
+cardNum?.addEventListener('input', ()=>{
+  let v = cardNum.value.replace(/\D/g,'').slice(0,16);
+  cardNum.value = v.replace(/(.{4})/g,'$1 ').trim();
+});
+const cardExp = document.getElementById('cardExp');
+cardExp?.addEventListener('input', ()=>{
+  let v = cardExp.value.replace(/\D/g,'').slice(0,4);
+  if(v.length>2) v = v.slice(0,2)+'/'+v.slice(2);
+  cardExp.value = v;
+});
+
+// Copy
+document.querySelectorAll('.copy-btn').forEach(b=>{
+  b.addEventListener('click', ev=>{
+    ev.preventDefault();
+    navigator.clipboard.writeText(b.dataset.copy);
+    b.textContent = 'הועתק ✓';
+    setTimeout(()=>b.textContent='העתק', 2000);
+  });
+});
+
+// Build a WhatsApp summary for backup notification
+function buildWhatsAppSummary(method, finalAmount){
+  const lines = [
+    '💎 הזמנה חדשה — Onyx Digital',
+    '',
+    `מסלול: ${order.planTier || ''} — ${order.planName || ''}`,
+    `שם: ${order.fullName || ''}`,
+    `עסק: ${order.bizName || ''}`,
+    `טלפון: ${order.phone || ''}`,
+    `אימייל: ${order.email || ''}`,
+    appliedCoupon ? `קוד הטבה: ${appliedCoupon}` : '',
+    `סכום: ₪${finalAmount.toLocaleString()}`,
+    `אמצעי תשלום: ${method}`,
+  ].filter(Boolean);
+  return encodeURIComponent(lines.join('\n'));
+}
+
+// Pay button
+document.getElementById('payBtn').addEventListener('click', ()=>{
+  if(!document.getElementById('termsAgree').checked){
+    alert('יש לאשר את תנאי השימוש ומדיניות הפרטיות לפני התשלום.');
+    return;
+  }
+  const method = document.querySelector('input[name=method]:checked').value;
+  const finalAmount = Math.round(basePrice * (1 - discount));
+
+  if(method === 'card'){
+    const num = document.getElementById('cardNum').value.replace(/\s/g,'');
+    if(num.length < 14){ alert('הזן מספר כרטיס תקין'); return; }
+    // PROD: integrate Cardcom / Tranzila — POST to your backend here.
+    // For now: show success modal + send WhatsApp notification to business owner.
+    notifyOwner(method, finalAmount);
+    document.getElementById('modalMsg').textContent = 'התשלום בכרטיס אשראי נקלט. נשלח לך אימייל עם החשבונית בדקות הקרובות.';
+    document.getElementById('successModal').classList.add('active');
+    // Wipe card fields immediately after submit
+    clearAllCardFields();
+    return;
+  }
+
+  if(method === 'bit'){
+    // Open Bit deeplink with phone + amount; Bit reads these on supported devices.
+    // Spec: bitpay://pay?phone=...&amount=...  +  https fallback for desktop.
+    const bitDeep = `bitpay://pay?phone=${BIZ_PHONE_LOCAL}&amount=${finalAmount}`;
+    const waBackup = `https://wa.me/${BIZ_PHONE_INTL}?text=${buildWhatsAppSummary('Bit', finalAmount)}`;
+    notifyOwner('Bit', finalAmount);
+    // Try Bit deeplink first
+    window.location.href = bitDeep;
+    // Fallback: after 1.2s show success modal explaining what to do
+    setTimeout(()=>{
+      document.getElementById('modalMsg').innerHTML =
+        `אם אפליקציית bit לא נפתחה אוטומטית — ` +
+        `<a href="${waBackup}" target="_blank" style="color:var(--gold-deep);font-weight:600;text-decoration:underline">לחץ כאן לשליחה ב-WhatsApp</a> ` +
+        `או פתח את bit ושלם ידנית למספר <strong>${BIZ_PHONE_LOCAL}</strong> בסכום <strong>₪${finalAmount.toLocaleString()}</strong>. ` +
+        `נקבל אישור מיידי.`;
+      document.getElementById('successModal').classList.add('active');
+    }, 1200);
+    return;
+  }
+
+  if(method === 'paybox'){
+    notifyOwner('PayBox', finalAmount);
+    document.getElementById('modalMsg').innerHTML =
+      `פתח את PayBox ושלם ל-<strong>${BIZ_PHONE_LOCAL}</strong> בסכום <strong>₪${finalAmount.toLocaleString()}</strong>. ` +
+      `שלחנו לך גם אימייל עם ההוראות.`;
+    document.getElementById('successModal').classList.add('active');
+    return;
+  }
+
+  if(method === 'transfer'){
+    notifyOwner('Bank transfer', finalAmount);
+    document.getElementById('modalMsg').textContent = 'פרטי החשבון להעברה נשלחו לאימייל שלך. תקבל גם חשבונית מס תוך 24 שעות.';
+    document.getElementById('successModal').classList.add('active');
+    return;
+  }
+});
+
+// Send notification to business owner.
+// Strategy:
+//   1) Fire-and-forget POST to n8n webhook (configured in webhook.js).
+//      Your n8n flow handles: Google Sheets log, WhatsApp (Green API / Twilio),
+//      customer email, Telegram alert, etc.
+//   2) ALWAYS also prepare a WhatsApp Click-to-Chat link as a manual backup
+//      (shown inside the success modal so the owner can re-send if needed).
+function notifyOwner(method, amount){
+  // 1) n8n webhook — silent, server-side
+  if(window.onyxWebhook){
+    window.onyxWebhook('payment', {
+      ...order,
+      method,
+      finalAmount: amount,
+      coupon: appliedCoupon || null,
+      discountPct: Math.round(discount * 100)
+    });
+  }
+  // 2) WhatsApp backup link
+  const url = `https://wa.me/${BIZ_PHONE_INTL}?text=${buildWhatsAppSummary(method, amount)}`;
+  // Save the URL on the success modal so the owner can re-open it from the modal
+  const link = document.createElement('a');
+  link.href = url;
+  link.target = '_blank';
+  link.rel = 'noopener';
+  link.textContent = 'שלח עדכון ב-WhatsApp לעסק';
+  link.style.cssText = 'display:inline-block;margin-top:1rem;color:#25D366;font-weight:600;text-decoration:underline';
+  const modalCard = document.querySelector('#successModal .modal-card');
+  // Avoid duplicates
+  const existing = modalCard.querySelector('.wa-notify-link');
+  if(!existing){
+    link.classList.add('wa-notify-link');
+    modalCard.insertBefore(link, modalCard.querySelector('a.btn-pay'));
+  }
+  // Also try to silently open in a popup (best-effort — popup blockers may reject)
+  try{
+    const w = window.open(url, '_blank', 'noopener,noreferrer,width=400,height=600');
+    if(w) setTimeout(()=>{ try{ w.close(); }catch(e){} }, 100);
+  }catch(e){}
+}
+</script>
+
+<script src="webhook.js"></script>
+</body>
+</html>

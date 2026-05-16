@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onyx Digital — Mobile App</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  background: #0a0a0a;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, oklch(72% 0.13 82 / 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+#root { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+
+/* Tweaks panel */
+#tweaks-panel {
+  display: none; position: fixed; bottom: 2rem; right: 2rem; z-index: 1000;
+  background: #111; border: 1px solid oklch(72% 0.13 82 / 0.3);
+  padding: 1.5rem; width: 240px;
+  font-family: 'DM Sans', sans-serif;
+  box-shadow: 0 20px 60px #000a;
+}
+#tweaks-panel.show { display: block; }
+.tweaks-title { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; margin-bottom: 1.2rem; color: oklch(72% 0.13 82); border-bottom: 1px solid #222; padding-bottom: 0.8rem; }
+.tweak-row { margin-bottom: 1rem; }
+.tweak-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: #666; margin-bottom: 0.4rem; display: block; }
+.tweak-opts { display: flex; flex-direction: column; gap: 0.3rem; }
+.tweak-btn { background: transparent; border: 1px solid #222; color: #ccc; padding: 0.4rem 0.7rem; font-size: 0.72rem; cursor: pointer; text-align: left; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+.tweak-btn.active { border-color: oklch(72% 0.13 82 / 0.6); color: oklch(72% 0.13 82); background: oklch(72% 0.13 82 / 0.08); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="tweaks-panel">
+  <div class="tweaks-title">Tweaks</div>
+  <div class="tweak-row">
+    <span class="tweak-label">Theme</span>
+    <div class="tweak-opts">
+      <button class="tweak-btn active" onclick="setTheme('dark',this)">◆ Black & Gold</button>
+      <button class="tweak-btn" onclick="setTheme('light',this)">◆ Cream & Black</button>
+      <button class="tweak-btn" onclick="setTheme('violet',this)">◆ Dark Violet</button>
+    </div>
+  </div>
+  <div class="tweak-row">
+    <span class="tweak-label">Language</span>
+    <div class="tweak-opts">
+      <button class="tweak-btn active" onclick="setLang('en',this)">English</button>
+      <button class="tweak-btn" onclick="setLang('he',this)">עברית</button>
+    </div>
+  </div>
+</div>
+
+<script type="text/babel">
+// ── iOS FRAME COMPONENTS (inlined) ──
+function IOSStatusBar({ dark = false, time = '9:41' }) {
+  const c = dark ? '#fff' : '#000';
+  return (
+    <div style={{ display: 'flex', gap: 154, alignItems: 'center', justifyContent: 'center', padding: '21px 24px 19px', boxSizing: 'border-box', position: 'relative', zIndex: 20, width: '100%' }}>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: 1.5 }}>
+        <span style={{ fontFamily: '-apple-system, "SF Pro", system-ui', fontWeight: 590, fontSize: 17, lineHeight: '22px', color: c }}>{time}</span>
+      </div>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, paddingTop: 1, paddingRight: 1 }}>
+        <svg width="19" height="12" viewBox="0 0 19 12"><rect x="0" y="7.5" width="3.2" height="4.5" rx="0.7" fill={c}/><rect x="4.8" y="5" width="3.2" height="7" rx="0.7" fill={c}/><rect x="9.6" y="2.5" width="3.2" height="9.5" rx="0.7" fill={c}/><rect x="14.4" y="0" width="3.2" height="12" rx="0.7" fill={c}/></svg>
+        <svg width="17" height="12" viewBox="0 0 17 12"><path d="M8.5 3.2C10.8 3.2 12.9 4.1 14.4 5.6L15.5 4.5C13.7 2.7 11.2 1.5 8.5 1.5C5.8 1.5 3.3 2.7 1.5 4.5L2.6 5.6C4.1 4.1 6.2 3.2 8.5 3.2Z" fill={c}/><path d="M8.5 6.8C9.9 6.8 11.1 7.3 12 8.2L13.1 7.1C11.8 5.9 10.2 5.1 8.5 5.1C6.8 5.1 5.2 5.9 3.9 7.1L5 8.2C5.9 7.3 7.1 6.8 8.5 6.8Z" fill={c}/><circle cx="8.5" cy="10.5" r="1.5" fill={c}/></svg>
+        <svg width="27" height="13" viewBox="0 0 27 13"><rect x="0.5" y="0.5" width="23" height="12" rx="3.5" stroke={c} strokeOpacity="0.35" fill="none"/><rect x="2" y="2" width="20" height="9" rx="2" fill={c}/><path d="M25 4.5V8.5C25.8 8.2 26.5 7.2 26.5 6.5C26.5 5.8 25.8 4.8 25 4.5Z" fill={c} fillOpacity="0.4"/></svg>
+      </div>
+    </div>
+  );
+}
+
+function IOSDevice({ children, width = 402, height = 874, dark = false }) {
+  return (
+    <div style={{ width, height, borderRadius: 48, overflow: 'hidden', position: 'relative', background: dark ? '#000' : '#F2F2F7', boxShadow: '0 40px 80px rgba(0,0,0,0.35), 0 0 0 1px rgba(0,0,0,0.18)', fontFamily: '-apple-system, system-ui, sans-serif', WebkitFontSmoothing: 'antialiased' }}>
+      <div style={{ position: 'absolute', top: 11, left: '50%', transform: 'translateX(-50%)', width: 126, height: 37, borderRadius: 24, background: '#000', zIndex: 50 }} />
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }}>
+        <IOSStatusBar dark={dark} />
+      </div>
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ flex: 1, overflow: 'hidden' }}>{children}</div>
+      </div>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 60, height: 34, display: 'flex', justifyContent: 'center', alignItems: 'flex-end', paddingBottom: 8, pointerEvents: 'none' }}>
+        <div style={{ width: 139, height: 5, borderRadius: 100, background: dark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.25)' }} />
+      </div>
+    </div>
+  );
+}
+
+// ── APP CODE ──
+const { useState, useRef, useEffect } = React;
+
+// ── THEME SYSTEM ──
+const THEMES = {
+  dark: {
+    bg: '#080808', bg2: '#111', fg: '#f5f0e8',
+    gold: 'oklch(72% 0.13 82)', goldFade: 'oklch(72% 0.13 82 / 0.15)',
+    goldLine: 'oklch(72% 0.13 82 / 0.3)', muted: 'oklch(72% 0.13 82 / 0.5)',
+    card: '#111', cardBorder: 'oklch(72% 0.13 82 / 0.12)',
+    tabBg: '#0c0c0c', tabBorder: 'oklch(72% 0.13 82 / 0.15)',
+  },
+  light: {
+    bg: '#f5f0e8', bg2: '#ede8df', fg: '#1a1510',
+    gold: 'oklch(38% 0.1 50)', goldFade: 'oklch(38% 0.1 50 / 0.1)',
+    goldLine: 'oklch(38% 0.1 50 / 0.25)', muted: 'oklch(38% 0.05 50 / 0.6)',
+    card: '#ede8df', cardBorder: 'oklch(38% 0.08 50 / 0.15)',
+    tabBg: '#ece7df', tabBorder: 'oklch(38% 0.1 50 / 0.15)',
+  },
+  violet: {
+    bg: '#08080f', bg2: '#0e0e1a', fg: '#f0eeff',
+    gold: 'oklch(72% 0.18 290)', goldFade: 'oklch(72% 0.18 290 / 0.12)',
+    goldLine: 'oklch(72% 0.18 290 / 0.28)', muted: 'oklch(72% 0.08 290 / 0.5)',
+    card: '#0f0f1e', cardBorder: 'oklch(72% 0.15 290 / 0.15)',
+    tabBg: '#0c0c18', tabBorder: 'oklch(72% 0.15 290 / 0.2)',
+  }
+};
+
+const TEXT = {
+  en: {
+    heroTag: "Israel's Premium Digital Agency",
+    heroTitle: "We don't sell chips.",
+    heroTitleEm: "We sell prestige.",
+    heroSub: "NFC reviews, premium websites, brand elevation — for businesses that refuse to be ordinary.",
+    cta: "Start Your Journey",
+    howTitle: "How It Works",
+    s1title: "Smart NFC Chip",
+    s1sub: "One tap → 5-star Google review. No friction.",
+    s2title: "Premium Website",
+    s2sub: "Bespoke sites & digital menus that impress.",
+    s3title: "Brand Elevation",
+    s3sub: "Reposition your business in a higher league.",
+    s4title: "Digital Hub",
+    s4sub: "One place for all your online presence.",
+    pricingTitle: "Simple Pricing",
+    contactTitle: "Let's Talk",
+    contactSub: "Ready to look premium?",
+    whatsapp: "Chat on WhatsApp",
+    call: "Call Us",
+    email: "Send Email",
+    form: "Send a Message",
+    send: "Send Message",
+    name: "Your Name",
+    btype: "Business Type",
+    phone: "Phone",
+    msg: "Message",
+  },
+  he: {
+    heroTag: "הסוכנות הדיגיטלית הפרמיום של ישראל",
+    heroTitle: "אנחנו לא מוכרים צ'יפים.",
+    heroTitleEm: "אנחנו מוכרים מעמד.",
+    heroSub: "NFC לביקורות, אתרים פרמיום ובניית מותג — לעסקים שמסביסים להיות רגילים.",
+    cta: "התחל את המסע",
+    howTitle: "איך זה עובד",
+    s1title: "צ'יפ NFC חכם",
+    s1sub: "נגיעה אחת → ביקורת 5 כוכבים בגוגל.",
+    s2title: "אתר פרמיום",
+    s2sub: "אתרים ותפריטים דיגיטליים שמרשימים.",
+    s3title: "בניית מותג",
+    s3sub: "ממצב את העסק שלך בליגה אחרת לגמרי.",
+    s4title: "הנוכחות הדיגיטלית",
+    s4sub: "כל הנוכחות שלך במקום אחד.",
+    pricingTitle: "תמחור שקוף",
+    contactTitle: "בואו נדבר",
+    contactSub: "מוכן להיראות פרמיום?",
+    whatsapp: "שלח הודעה בוואטסאפ",
+    call: "התקשר אלינו",
+    email: "שלח אימייל",
+    form: "שלח הודעה",
+    send: "שלח",
+    name: "שם מלא",
+    btype: "סוג עסק",
+    phone: "טלפון",
+    msg: "הודעה",
+  }
+};
+
+// Global state for tweaks
+window.__onyxTheme = 'dark';
+window.__onyxLang = 'en';
+window.__onyxSetTheme = null;
+window.__onyxSetLang = null;
+
+window.setTheme = (name, btn) => {
+  window.__onyxTheme = name;
+  btn.closest('.tweak-opts').querySelectorAll('.tweak-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (window.__onyxSetTheme) window.__onyxSetTheme(name);
+};
+
+window.setLang = (lang, btn) => {
+  window.__onyxLang = lang;
+  btn.closest('.tweak-opts').querySelectorAll('.tweak-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (window.__onyxSetLang) window.__onyxSetLang(lang);
+};
+
+// ── ICON COMPONENTS ──
+const Icon = ({ name, color = 'currentColor', size = 22 }) => {
+  const icons = {
+    home: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+    grid: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>,
+    tag: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>,
+    phone: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.63A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>,
+    nfc: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M6 5H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><path d="M12 12a3 3 0 100-6 3 3 0 000 6z"/><path d="M9 17v-1a3 3 0 016 0v1"/></svg>,
+    web: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>,
+    star: <svg width={size} height={size} viewBox="0 0 24 24" fill={color} stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+    brand: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>,
+    hub: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 12h3M18 12h3M12 3v3M12 18v3M5.64 5.64l2.12 2.12M16.24 16.24l2.12 2.12M5.64 18.36l2.12-2.12M16.24 7.76l2.12-2.12"/></svg>,
+    wa: <svg width={size} height={size} viewBox="0 0 24 24" fill={color}><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>,
+    chevRight: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>,
+    check: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+    send: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>,
+  };
+  return icons[name] || null;
+};
+
+// ── SCROLL CONTAINER ──
+const Screen = ({ children, t, bg }) => (
+  <div style={{
+    height: '100%', overflowY: 'auto', overflowX: 'hidden',
+    background: bg,
+    scrollbarWidth: 'none',
+    WebkitOverflowScrolling: 'touch',
+    paddingBottom: 80,
+  }}>
+    {children}
+  </div>
+);
+
+// ── HOME SCREEN ──
+const HomeScreen = ({ t, th }) => {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => { setTimeout(() => setVisible(true), 100); }, []);
+
+  const services = [
+    { icon: 'nfc', title: t.s1title, sub: t.s1sub },
+    { icon: 'web', title: t.s2title, sub: t.s2sub },
+    { icon: 'brand', title: t.s3title, sub: t.s3sub },
+    { icon: 'hub', title: t.s4title, sub: t.s4sub },
+  ];
+
+  return (
+    <Screen t={t} bg={th.bg}>
+      {/* HERO */}
+      <div style={{
+        padding: '100px 28px 40px',
+        background: `linear-gradient(180deg, ${th.bg2} 0%, ${th.bg} 100%)`,
+        position: 'relative', overflow: 'hidden',
+      }}>
+        {/* Decorative ring */}
+        <div style={{
+          position: 'absolute', right: -60, top: 60,
+          width: 220, height: 220,
+          borderRadius: '50%',
+          border: `1px solid ${th.goldLine}`,
+          opacity: 0.6,
+        }}/>
+        <div style={{
+          position: 'absolute', right: -30, top: 90,
+          width: 160, height: 160,
+          borderRadius: '50%',
+          border: `1px solid ${th.goldLine}`,
+          opacity: 0.3,
+        }}/>
+
+        <div style={{
+          fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase',
+          color: th.gold, marginBottom: 16,
+          display: 'flex', alignItems: 'center', gap: 8,
+          opacity: visible ? 1 : 0, transition: 'opacity 0.6s',
+        }}>
+          <div style={{ width: 20, height: 1, background: th.gold }}/>
+          {t.heroTag}
+        </div>
+
+        <h1 style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontSize: 36, fontWeight: 300, lineHeight: 1.1,
+          color: th.fg, marginBottom: 16,
+          opacity: visible ? 1 : 0, transform: visible ? 'none' : 'translateY(16px)',
+          transition: 'all 0.7s 0.1s',
+        }}>
+          {t.heroTitle}<br/>
+          <em style={{ color: th.gold, fontStyle: 'italic' }}>{t.heroTitleEm}</em>
+        </h1>
+
+        <p style={{
+          fontSize: 13.5, color: th.muted, lineHeight: 1.7,
+          marginBottom: 28, maxWidth: 280,
+          opacity: visible ? 1 : 0, transition: 'opacity 0.7s 0.2s',
+        }}>{t.heroSub}</p>
+
+        <button style={{
+          background: th.gold, color: '#080808',
+          border: 'none', padding: '13px 24px',
+          fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase',
+          fontWeight: 500, fontFamily: "'DM Sans', sans-serif",
+          cursor: 'pointer',
+          opacity: visible ? 1 : 0, transition: 'opacity 0.7s 0.3s',
+        }}>{t.cta}</button>
+
+        {/* Stars */}
+        <div style={{ display: 'flex', gap: 4, marginTop: 20, alignItems: 'center' }}>
+          {[0,1,2,3,4].map(i => (
+            <Icon key={i} name="star" color={th.gold} size={14}/>
+          ))}
+          <span style={{ fontSize: 11, color: th.muted, marginLeft: 6 }}>4,800+ reviews generated</span>
+        </div>
+      </div>
+
+      {/* STATS ROW */}
+      <div style={{
+        display: 'grid', gridTemplateColumns: 'repeat(3,1fr)',
+        borderTop: `1px solid ${th.cardBorder}`,
+        borderBottom: `1px solid ${th.cardBorder}`,
+        background: th.bg2,
+      }}>
+        {[['120+', 'Businesses'], ['4,800+', 'Reviews'], ['98%', 'Satisfied']].map(([n, l], i) => (
+          <div key={i} style={{
+            padding: '18px 8px', textAlign: 'center',
+            borderRight: i < 2 ? `1px solid ${th.cardBorder}` : 'none',
+          }}>
+            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 26, fontWeight: 300, color: th.gold, lineHeight: 1 }}>{n}</div>
+            <div style={{ fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: th.muted, marginTop: 4 }}>{l}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* SERVICES PREVIEW */}
+      <div style={{ padding: '28px 20px 0' }}>
+        <div style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: th.gold, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ width: 14, height: 1, background: th.gold }}/>
+          Services
+        </div>
+        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 26, fontWeight: 300, color: th.fg, marginBottom: 20 }}>
+          What we <em style={{ fontStyle: 'italic', color: th.gold }}>offer</em>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2, background: th.cardBorder, border: `1px solid ${th.cardBorder}` }}>
+          {services.map((s, i) => (
+            <div key={i} style={{
+              background: th.card, padding: '18px 20px',
+              display: 'flex', alignItems: 'center', gap: 16,
+            }}>
+              <div style={{
+                width: 40, height: 40, flexShrink: 0,
+                border: `1px solid ${th.goldLine}`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: th.gold,
+              }}>
+                <Icon name={s.icon} color={th.gold} size={18}/>
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 14, fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, color: th.fg, marginBottom: 2 }}>{s.title}</div>
+                <div style={{ fontSize: 11.5, color: th.muted, lineHeight: 1.5 }}>{s.sub}</div>
+              </div>
+              <div style={{ color: th.muted }}><Icon name="chevRight" color={th.muted} size={14}/></div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* HOW IT WORKS */}
+      <div style={{ padding: '32px 20px 0' }}>
+        <div style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: th.gold, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ width: 14, height: 1, background: th.gold }}/>
+          Process
+        </div>
+        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 26, fontWeight: 300, color: th.fg, marginBottom: 20 }}>
+          {t.howTitle}
+        </div>
+        {[
+          ['I', 'Discovery Call', 'We meet, listen, and understand your business inside out.'],
+          ['II', 'Strategy & Build', 'We design your full digital presence — NFC, website, brand assets.'],
+          ['III', 'Launch & Grow', 'Deploy, monitor, and grow. Reviews climb, clients find you.'],
+        ].map(([num, title, desc], i) => (
+          <div key={i} style={{
+            display: 'flex', gap: 16, marginBottom: 20,
+            paddingBottom: 20,
+            borderBottom: i < 2 ? `1px solid ${th.cardBorder}` : 'none',
+          }}>
+            <div style={{
+              width: 38, height: 38, flexShrink: 0,
+              borderRadius: '50%', border: `1px solid ${th.goldLine}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: 15, color: th.gold,
+            }}>{num}</div>
+            <div>
+              <div style={{ fontSize: 14, fontFamily: "'Cormorant Garamond', serif", color: th.fg, marginBottom: 4 }}>{title}</div>
+              <div style={{ fontSize: 12, color: th.muted, lineHeight: 1.6 }}>{desc}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Screen>
+  );
+};
+
+// ── SERVICES SCREEN ──
+const ServicesScreen = ({ t, th }) => {
+  const services = [
+    {
+      num: '01', icon: 'nfc', title: t.s1title,
+      desc: 'A single tap sends your customer to your Google review page. No searching, no friction — just five stars. We program, brand, and deliver it.',
+      tags: ['Google', 'Waze', 'TripAdvisor'],
+    },
+    {
+      num: '02', icon: 'web', title: t.s2title,
+      desc: 'Bespoke websites and digital menus that make your establishment look world-class — because your craft deserves world-class presentation.',
+      tags: ['Restaurants', 'Cafes', 'Boutiques'],
+    },
+    {
+      num: '03', icon: 'brand', title: t.s3title,
+      desc: 'We reposition your business in a different league. Visual identity, photography, copy, and strategy that make clients feel the premium before they enter.',
+      tags: ['Identity', 'Strategy', 'Copy'],
+    },
+    {
+      num: '04', icon: 'hub', title: t.s4title,
+      desc: 'Google Business, social profiles, booking systems, and online reputation — all managed in one place so you focus on what you do best.',
+      tags: ['Google', 'Instagram', 'Booking'],
+    },
+  ];
+  return (
+    <Screen t={t} bg={th.bg}>
+      <div style={{ padding: '100px 0 0' }}>
+        <div style={{ padding: '0 20px 24px' }}>
+          <div style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: th.gold, marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ width: 14, height: 1, background: th.gold }}/>
+            What We Offer
+          </div>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 30, fontWeight: 300, color: th.fg, lineHeight: 1.1 }}>
+            Four pillars of<br/><em style={{ color: th.gold, fontStyle: 'italic' }}>digital excellence</em>
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 1, background: th.cardBorder }}>
+          {services.map((s, i) => (
+            <div key={i} style={{ background: th.card, padding: '24px 20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
+                <div style={{
+                  width: 44, height: 44, flexShrink: 0,
+                  border: `1px solid ${th.goldLine}`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: th.gold,
+                }}>
+                  <Icon name={s.icon} color={th.gold} size={20}/>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, color: th.muted, letterSpacing: '0.15em', textTransform: 'uppercase' }}>{s.num}</div>
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, color: th.fg, fontWeight: 400 }}>{s.title}</div>
+                </div>
+              </div>
+              <p style={{ fontSize: 12.5, color: th.muted, lineHeight: 1.7, marginBottom: 14 }}>{s.desc}</p>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {s.tags.map(tag => (
+                  <span key={tag} style={{
+                    fontSize: 9.5, letterSpacing: '0.15em', textTransform: 'uppercase',
+                    color: th.gold, border: `1px solid ${th.goldLine}`,
+                    padding: '3px 8px',
+                  }}>{tag}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Screen>
+  );
+};
+
+// ── PRICING SCREEN ──
+const PricingScreen = ({ t, th }) => {
+  const plans = [
+    {
+      tier: 'Starter', price: '490', period: '/mo',
+      features: ['1 Branded NFC Chip', 'Google Review Setup', 'Digital Business Card', 'Monthly Report'],
+      featured: false,
+    },
+    {
+      tier: 'Premium', price: '990', period: '/mo',
+      features: ['3 Branded NFC Chips', 'Bespoke Website (5 pages)', 'Digital Menu', 'Google Business Mgmt', 'Brand Strategy Session', 'Priority Support'],
+      featured: true,
+    },
+    {
+      tier: 'Elite', price: '1,990', period: '/mo',
+      features: ['Unlimited NFC Chips', 'Full Digital Hub', 'Custom Web App', 'Brand Identity Package', 'Social Media Mgmt', 'Dedicated Account Manager'],
+      featured: false,
+    },
+  ];
+  return (
+    <Screen t={t} bg={th.bg}>
+      <div style={{ padding: '100px 0 0' }}>
+        <div style={{ padding: '0 20px 24px' }}>
+          <div style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: th.gold, marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ width: 14, height: 1, background: th.gold }}/>
+            Investment
+          </div>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 30, fontWeight: 300, color: th.fg, lineHeight: 1.1 }}>
+            {t.pricingTitle}
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '0 20px' }}>
+          {plans.map((p, i) => (
+            <div key={i} style={{
+              background: p.featured ? th.bg2 : th.card,
+              border: `1px solid ${p.featured ? th.gold : th.cardBorder}`,
+              padding: '24px 20px',
+              position: 'relative',
+            }}>
+              {p.featured && (
+                <div style={{
+                  position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)',
+                  background: th.gold, color: '#080808',
+                  fontSize: 8, letterSpacing: '0.18em', textTransform: 'uppercase',
+                  padding: '3px 12px', fontWeight: 500, whiteSpace: 'nowrap',
+                }}>Most Popular</div>
+              )}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+                <div>
+                  <div style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: th.gold, marginBottom: 4 }}>{p.tier}</div>
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 36, fontWeight: 300, color: th.fg, lineHeight: 1 }}>
+                    ₪{p.price}
+                    <span style={{ fontSize: 14, color: th.muted }}>{p.period}</span>
+                  </div>
+                </div>
+              </div>
+              <div style={{ height: 1, background: th.cardBorder, marginBottom: 16 }}/>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
+                {p.features.map(f => (
+                  <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ color: th.gold, flexShrink: 0 }}><Icon name="check" color={th.gold} size={13}/></div>
+                    <span style={{ fontSize: 12.5, color: th.muted }}>{f}</span>
+                  </div>
+                ))}
+              </div>
+              <button style={{
+                width: '100%', padding: '12px',
+                background: p.featured ? th.gold : 'transparent',
+                border: `1px solid ${p.featured ? th.gold : th.goldLine}`,
+                color: p.featured ? '#080808' : th.gold,
+                fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase',
+                fontWeight: 500, fontFamily: "'DM Sans', sans-serif", cursor: 'pointer',
+              }}>Get Started</button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Screen>
+  );
+};
+
+// ── CONTACT SCREEN ──
+const ContactScreen = ({ t, th }) => {
+  const [sent, setSent] = useState(false);
+  const [form, setForm] = useState({ name: '', type: '', phone: '', msg: '' });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSent(true);
+    setTimeout(() => setSent(false), 4000);
+  };
+
+  const inputStyle = {
+    width: '100%', padding: '12px 14px',
+    background: th.card, border: `1px solid ${th.cardBorder}`,
+    color: th.fg, fontSize: 13,
+    fontFamily: "'DM Sans', sans-serif", outline: 'none',
+    appearance: 'none',
+  };
+
+  return (
+    <Screen t={t} bg={th.bg}>
+      <div style={{ padding: '100px 20px 0' }}>
+        <div style={{ marginBottom: 28 }}>
+          <div style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: th.gold, marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ width: 14, height: 1, background: th.gold }}/>
+            Let's Talk
+          </div>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 300, color: th.fg, lineHeight: 1.15 }}>
+            {t.contactSub}<br/>
+            <em style={{ color: th.gold, fontStyle: 'italic' }}>{t.contactTitle}</em>
+          </div>
+        </div>
+
+        {/* Quick contact methods */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 28 }}>
+          {[
+            { icon: 'wa', label: t.whatsapp, color: '#25D366' },
+            { icon: 'phone', label: t.call, color: th.gold },
+            { icon: 'send', label: t.email, color: th.gold },
+          ].map((m, i) => (
+            <button key={i} style={{
+              display: 'flex', alignItems: 'center', gap: 14,
+              padding: '14px 16px',
+              background: th.card, border: `1px solid ${th.cardBorder}`,
+              color: th.fg, cursor: 'pointer',
+              fontFamily: "'DM Sans', sans-serif", fontSize: 13,
+              textAlign: 'left', transition: 'border-color 0.2s',
+              width: '100%',
+            }}>
+              <div style={{ color: m.color, flexShrink: 0 }}>
+                <Icon name={m.icon} color={m.color} size={20}/>
+              </div>
+              <span>{m.label}</span>
+              <div style={{ marginLeft: 'auto', color: th.muted }}>
+                <Icon name="chevRight" color={th.muted} size={14}/>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Form */}
+        <div style={{ borderTop: `1px solid ${th.cardBorder}`, paddingTop: 24 }}>
+          <div style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: th.gold, marginBottom: 16 }}>{t.form}</div>
+          {sent ? (
+            <div style={{
+              background: th.card, border: `1px solid ${th.goldLine}`,
+              padding: '24px 20px', textAlign: 'center',
+            }}>
+              <div style={{ color: th.gold, marginBottom: 8 }}><Icon name="check" color={th.gold} size={32}/></div>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, color: th.fg }}>Message Sent!</div>
+              <div style={{ fontSize: 12, color: th.muted, marginTop: 6 }}>We'll be in touch within 24 hours.</div>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div>
+                <label style={{ fontSize: 9, letterSpacing: '0.15em', textTransform: 'uppercase', color: th.muted, display: 'block', marginBottom: 5 }}>{t.name}</label>
+                <input style={inputStyle} placeholder="David Cohen" required onChange={e => setForm({...form, name: e.target.value})}/>
+              </div>
+              <div>
+                <label style={{ fontSize: 9, letterSpacing: '0.15em', textTransform: 'uppercase', color: th.muted, display: 'block', marginBottom: 5 }}>{t.btype}</label>
+                <select style={inputStyle} required onChange={e => setForm({...form, type: e.target.value})}>
+                  <option value="" disabled selected>Select type</option>
+                  <option>Restaurant / מסעדה</option>
+                  <option>Barbershop / ספרייה</option>
+                  <option>Clothing Store / חנות</option>
+                  <option>Cafe / קפה</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div>
+                <label style={{ fontSize: 9, letterSpacing: '0.15em', textTransform: 'uppercase', color: th.muted, display: 'block', marginBottom: 5 }}>{t.phone}</label>
+                <input type="tel" style={inputStyle} placeholder="+972 50-000-0000" onChange={e => setForm({...form, phone: e.target.value})}/>
+              </div>
+              <div>
+                <label style={{ fontSize: 9, letterSpacing: '0.15em', textTransform: 'uppercase', color: th.muted, display: 'block', marginBottom: 5 }}>{t.msg}</label>
+                <textarea style={{ ...inputStyle, minHeight: 90, resize: 'none' }} placeholder="Tell us about your business..." onChange={e => setForm({...form, msg: e.target.value})}/>
+              </div>
+              <button type="submit" style={{
+                background: th.gold, color: '#080808',
+                border: 'none', padding: '14px',
+                fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase',
+                fontWeight: 500, fontFamily: "'DM Sans', sans-serif", cursor: 'pointer',
+                marginTop: 4,
+              }}>{t.send}</button>
+            </form>
+          )}
+        </div>
+      </div>
+    </Screen>
+  );
+};
+
+// ── BOTTOM TAB BAR ──
+const TabBar = ({ active, onTab, th }) => {
+  const tabs = [
+    { id: 'home', icon: 'home', label: 'Home' },
+    { id: 'services', icon: 'grid', label: 'Services' },
+    { id: 'pricing', icon: 'tag', label: 'Pricing' },
+    { id: 'contact', icon: 'phone', label: 'Contact' },
+  ];
+  return (
+    <div style={{
+      position: 'absolute', bottom: 0, left: 0, right: 0,
+      height: 74, zIndex: 50,
+      background: th.tabBg,
+      borderTop: `1px solid ${th.tabBorder}`,
+      display: 'flex', alignItems: 'stretch',
+      paddingBottom: 18,
+    }}>
+      {tabs.map(tab => (
+        <button key={tab.id}
+          onClick={() => onTab(tab.id)}
+          style={{
+            flex: 1, background: 'none', border: 'none', cursor: 'pointer',
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            justifyContent: 'center', gap: 3, padding: '8px 0 0',
+          }}
+        >
+          <div style={{ color: active === tab.id ? th.gold : th.muted, transition: 'color 0.2s' }}>
+            <Icon name={tab.icon} color={active === tab.id ? th.gold : th.muted} size={20}/>
+          </div>
+          <div style={{
+            fontSize: 9.5, letterSpacing: '0.05em',
+            color: active === tab.id ? th.gold : th.muted,
+            transition: 'color 0.2s',
+          }}>{tab.label}</div>
+        </button>
+      ))}
+    </div>
+  );
+};
+
+// ── TOP NAV BAR ──
+const AppNavBar = ({ tab, th }) => {
+  const titles = { home: 'ONYX', services: 'Services', pricing: 'Pricing', contact: 'Contact' };
+  return (
+    <div style={{
+      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 40,
+      background: th.bg + 'ee',
+      backdropFilter: 'blur(16px)',
+      borderBottom: `1px solid ${th.cardBorder}`,
+      paddingTop: 60, paddingBottom: 12,
+      paddingLeft: 20, paddingRight: 20,
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    }}>
+      <div style={{
+        fontFamily: "'Cormorant Garamond', serif",
+        fontSize: 18, fontWeight: 600, letterSpacing: '0.1em',
+        color: th.fg,
+      }}>
+        ONYX<span style={{ color: th.gold }}>.</span>
+        {tab !== 'home' && <span style={{ fontWeight: 300, marginLeft: 4 }}>{titles[tab]}</span>}
+      </div>
+      <div style={{ fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: th.gold }}>
+        IL
+      </div>
+    </div>
+  );
+};
+
+// ── MAIN APP ──
+const App = () => {
+  const [tab, setTab] = useState('home');
+  const [themeName, setThemeName] = useState(window.__onyxTheme || 'dark');
+  const [lang, setLang] = useState(window.__onyxLang || 'en');
+
+  window.__onyxSetTheme = setThemeName;
+  window.__onyxSetLang = setLang;
+
+  // Persist tab
+  useEffect(() => {
+    const saved = localStorage.getItem('onyx-tab');
+    if (saved) setTab(saved);
+  }, []);
+  const goTab = (t) => { setTab(t); localStorage.setItem('onyx-tab', t); };
+
+  const th = THEMES[themeName];
+  const t = TEXT[lang];
+
+  const screens = { home: HomeScreen, services: ServicesScreen, pricing: PricingScreen, contact: ContactScreen };
+  const ActiveScreen = screens[tab];
+
+  // Scale to fit viewport
+  const scale = Math.min(
+    (window.innerHeight - 40) / 874,
+    (window.innerWidth - 40) / 402,
+    1
+  );
+
+  return (
+    <div style={{ transform: `scale(${scale})`, transformOrigin: 'center center' }}>
+      <IOSDevice width={402} height={874} dark={themeName !== 'light'}>
+        <IOSStatusBar dark={themeName !== 'light'} />
+        <div style={{ position: 'relative', height: '100%', overflow: 'hidden' }}>
+          <AppNavBar tab={tab} th={th}/>
+          <div style={{ position: 'absolute', inset: 0, paddingBottom: 74, background: th.bg }}>
+            <ActiveScreen t={t} th={th}/>
+          </div>
+          <TabBar active={tab} onTab={goTab} th={th}/>
+        </div>
+      </IOSDevice>
+    </div>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+
+<script>
+// Tweaks panel
+window.addEventListener('message', e => {
+  if (e.data?.type === '__activate_edit_mode') document.getElementById('tweaks-panel').classList.add('show');
+  if (e.data?.type === '__deactivate_edit_mode') document.getElementById('tweaks-panel').classList.remove('show');
+});
+window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+</script>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#fbfbfd">
+<title>הזמנה — Onyx Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbfbfd;--bg-section:#f5f5f7;
+  --text:#1d1d1f;--text-2:#424245;--text-3:#6e6e73;
+  --line:rgba(0,0,0,.08);--line-2:rgba(0,0,0,.13);
+  --gold:#C7AE6A;--gold-deep:#A3834E;--gold-light:#D8C987;
+  --gold-tint:rgba(199,174,106,.08);--gold-tint-2:rgba(199,174,106,.18);
+  --font-en:'Inter',-apple-system,sans-serif;
+  --font-he:'Heebo','Inter',sans-serif;
+  --max:1100px;--pad-x:max(22px,5vw);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-he);background:var(--bg);color:var(--text);line-height:1.5;direction:rtl;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font:inherit}
+*:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(251,251,253,.78);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.05);height:56px}
+.nav-inner{max-width:1440px;margin:0 auto;height:100%;padding:0 var(--pad-x);display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.nav-logo{display:flex;align-items:center;gap:.55rem;font-family:var(--font-en);font-weight:700;font-size:.92rem}
+.nav-logo-mark{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--gold-deep),var(--gold),var(--gold-light));display:grid;place-items:center;color:#000;font-weight:900;font-size:.7rem;letter-spacing:.05em;box-shadow:0 1px 3px rgba(199,174,106,.4)}
+.nav-back{font-size:.85rem;color:var(--text-3)}
+.nav-back:hover{color:var(--text)}
+
+.hero-page{padding:8rem var(--pad-x) 3rem;text-align:center;background:linear-gradient(180deg,#fff 0%,#fbfbfd 50%,#f5f5f7 100%);position:relative}
+.hero-page::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--line-2),transparent)}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:.6rem;font-family:var(--font-en);font-size:.72rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:1.2rem;padding:.45rem 1rem;border:1px solid var(--gold-tint-2);border-radius:980px;background:var(--gold-tint)}
+.hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(199,174,106,.18)}
+h1.title{font-family:var(--font-he);font-size:clamp(2.4rem,6vw,4.6rem);font-weight:800;line-height:1;letter-spacing:-.035em;margin-bottom:1rem}
+.title .gold{background:linear-gradient(135deg,var(--gold-deep),var(--gold),var(--gold-light));-webkit-background-clip:text;background-clip:text;color:transparent}
+.subtitle{font-size:clamp(1rem,1.5vw,1.2rem);color:var(--text-2);max-width:600px;margin:0 auto}
+
+main{padding:3rem var(--pad-x) 5rem;max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:1.5fr 1fr;gap:1.6rem;align-items:start}
+@media(max-width:880px){main{grid-template-columns:1fr}}
+
+.panel{background:#fff;border:1px solid var(--line);border-radius:24px;padding:2.5rem;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+@media(max-width:600px){.panel{padding:1.6rem;border-radius:20px}}
+
+.section-head{margin-bottom:1.6rem}
+.section-head h2{font-family:var(--font-he);font-size:1.4rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.3rem}
+.section-head p{font-size:.85rem;color:var(--text-3)}
+
+/* PLAN PICKER */
+.plans{display:flex;flex-direction:column;gap:.7rem;margin-bottom:2rem}
+.plan{display:flex;align-items:center;gap:1rem;padding:1.2rem 1.3rem;border:1.5px solid var(--line);border-radius:14px;cursor:pointer;transition:all .25s;background:#fff;position:relative}
+.plan:hover{border-color:var(--gold);transform:translateY(-1px)}
+.plan.active{border-color:var(--gold);background:var(--gold-tint);box-shadow:0 4px 16px rgba(199,174,106,.15)}
+.plan-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--line-2);flex-shrink:0;transition:all .25s}
+.plan.active .plan-radio{border-color:var(--gold);background:var(--gold);box-shadow:inset 0 0 0 4px #fff}
+.plan-text{flex:1}
+.plan-text strong{display:block;font-family:var(--font-he);font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:.2rem;letter-spacing:-.01em}
+.plan-text span{font-size:.8rem;color:var(--text-3);line-height:1.4}
+.plan-price{font-family:var(--font-en);font-weight:700;font-size:1.1rem;letter-spacing:-.02em;color:var(--text);text-align:left}
+.plan-price small{display:block;font-size:.65rem;font-weight:500;color:var(--text-3);letter-spacing:0;margin-top:.1rem}
+.plan-tag{position:absolute;top:-9px;left:1.3rem;font-family:var(--font-en);font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#000;background:linear-gradient(135deg,var(--gold-deep),var(--gold-light));padding:.25rem .65rem;border-radius:980px}
+
+/* ADDONS */
+.addons{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.5rem}
+.addon{display:flex;align-items:center;gap:.9rem;padding:.9rem 1.1rem;border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:all .2s}
+.addon:hover{border-color:var(--gold-tint-2);background:var(--gold-tint)}
+.addon.active{border-color:var(--gold);background:var(--gold-tint)}
+.addon-check{width:20px;height:20px;border-radius:6px;border:2px solid var(--line-2);display:grid;place-items:center;color:#fff;flex-shrink:0;transition:all .25s}
+.addon.active .addon-check{background:var(--gold);border-color:var(--gold)}
+.addon.active .addon-check::after{content:'✓';font-size:.75rem;font-weight:700}
+.addon-text{flex:1;font-size:.88rem}
+.addon-price{font-family:var(--font-en);font-weight:600;color:var(--text-2);font-size:.85rem}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
+@media(max-width:520px){.form-grid{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:.4rem}
+.field.full{grid-column:1/-1}
+.field label{font-size:.78rem;font-weight:500;color:var(--text-2)}
+.field label .req{color:#d23535;margin-right:.2rem}
+.field input,.field select,.field textarea{background:#fff;border:1px solid var(--line-2);border-radius:10px;padding:.8rem 1rem;font-size:.95rem;transition:border-color .2s,box-shadow .2s;font-family:inherit}
+.field textarea{min-height:90px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px var(--gold-tint)}
+
+/* CHECK */
+.check-row{display:flex;align-items:flex-start;gap:.7rem;font-size:.82rem;color:var(--text-2);margin-top:1.2rem;line-height:1.5}
+.check-row input{width:18px;height:18px;margin-top:.1rem;accent-color:var(--gold);flex-shrink:0}
+.check-row a{color:var(--gold-deep);text-decoration:underline}
+
+/* SUMMARY */
+.summary{position:sticky;top:80px}
+.sum-row{display:flex;justify-content:space-between;align-items:flex-start;padding:.7rem 0;border-bottom:1px solid var(--line);gap:1rem;font-size:.88rem}
+.sum-row:last-of-type{border-bottom:none}
+.sum-label{color:var(--text-3)}
+.sum-val{font-weight:500;color:var(--text);text-align:left}
+.sum-total{margin-top:1rem;padding-top:1.2rem;border-top:2px solid var(--text);display:flex;justify-content:space-between;align-items:baseline}
+.sum-total-label{font-size:1rem;font-weight:600}
+.sum-total-val{font-family:var(--font-en);font-size:1.8rem;font-weight:700;letter-spacing:-.02em}
+
+.btn-next{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;padding:1.1rem;background:var(--text);color:#fff;border-radius:980px;font-size:.95rem;font-weight:500;margin-top:1.4rem;transition:transform .25s,background .25s,box-shadow .25s}
+.btn-next:hover{background:#000;transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.18)}
+.btn-next:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+.fineprint{text-align:center;font-size:.72rem;color:var(--text-3);margin-top:1rem;line-height:1.5}
+
+footer{background:var(--bg-section);padding:2rem var(--pad-x);text-align:center;font-size:.78rem;color:var(--text-3);border-top:1px solid var(--line)}
+footer a{color:var(--text-3)}
+footer a:hover{color:var(--text)}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-mark">OD</span>
+      <span>Onyx Digital</span>
+    </a>
+    <a href="index.html" class="nav-back">← חזרה לבית</a>
+  </div>
+</header>
+
+<section class="hero-page">
+  <div class="hero-eyebrow">השלב הראשון · 2 דקות</div>
+  <h1 class="title">בוא <span class="gold">נתחיל</span>.</h1>
+  <p class="subtitle">בחר מסלול, ספר לנו על העסק שלך — ונקבע שיחת היכרות תוך 24 שעות.</p>
+</section>
+
+<main>
+
+  <form class="panel" id="orderForm" novalidate>
+
+    <div class="section-head">
+      <h2>בחר מסלול</h2>
+      <p>תוכל לשדרג או להוריד מסלול בכל עת.</p>
+    </div>
+
+    <div class="plans" role="radiogroup" aria-label="בחירת מסלול">
+
+      <label class="plan" data-plan="starter" data-price="2990" data-name="Essentials" tabindex="0">
+        <span class="plan-radio" aria-hidden="true"></span>
+        <span class="plan-text">
+          <strong>Essentials</strong>
+          <span>צ'יפ NFC + דף נחיתה · אידיאלי לעסק חדש</span>
+        </span>
+        <span class="plan-price">₪2,990<small>חד פעמי</small></span>
+        <input type="radio" name="plan" value="starter" hidden>
+      </label>
+
+      <label class="plan active" data-plan="premium" data-price="5990" data-name="המסלול המלא" tabindex="0">
+        <span class="plan-tag">הנבחר ביותר</span>
+        <span class="plan-radio" aria-hidden="true"></span>
+        <span class="plan-text">
+          <strong>Premium</strong>
+          <span>NFC + אתר פרימיום + מותג + 3 חודשי ניהול</span>
+        </span>
+        <span class="plan-price">₪5,990<small>חד פעמי</small></span>
+        <input type="radio" name="plan" value="premium" checked hidden>
+      </label>
+
+      <label class="plan" data-plan="signature" data-price="9990" data-name="חתימה" tabindex="0">
+        <span class="plan-radio" aria-hidden="true"></span>
+        <span class="plan-text">
+          <strong>Signature</strong>
+          <span>הכל ב-Premium + מותג מלא + ניהול שנתי + צילום</span>
+        </span>
+        <span class="plan-price">₪9,990<small>חד פעמי</small></span>
+        <input type="radio" name="plan" value="signature" hidden>
+      </label>
+
+    </div>
+
+    <div class="section-head">
+      <h2>תוספות (אופציונלי)</h2>
+      <p>הכל מודולרי — אפשר להוסיף בעת ההזמנה או אחר כך.</p>
+    </div>
+
+    <div class="addons">
+      <div class="addon" data-addon="seo" data-price="800" tabindex="0" role="checkbox" aria-checked="false">
+        <span class="addon-check" aria-hidden="true"></span>
+        <span class="addon-text"><strong>SEO לוקאלי</strong> — קידום במפות גוגל לאזור שלך</span>
+        <span class="addon-price">+₪800</span>
+      </div>
+      <div class="addon" data-addon="photo" data-price="1200" tabindex="0" role="checkbox" aria-checked="false">
+        <span class="addon-check" aria-hidden="true"></span>
+        <span class="addon-text"><strong>צילום מקצועי</strong> — יום צילום בעסק שלך עם צלם</span>
+        <span class="addon-price">+₪1,200</span>
+      </div>
+      <div class="addon" data-addon="extra-nfc" data-price="450" tabindex="0" role="checkbox" aria-checked="false">
+        <span class="addon-check" aria-hidden="true"></span>
+        <span class="addon-text"><strong>3 צ'יפי NFC נוספים</strong> — לעמדות נוספות</span>
+        <span class="addon-price">+₪450</span>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2>הפרטים שלך</h2>
+      <p>אנחנו נחזור אליך תוך 24 שעות.</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="field">
+        <label for="fullName"><span class="req">*</span>שם מלא</label>
+        <input id="fullName" name="fullName" type="text" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="phone"><span class="req">*</span>טלפון</label>
+        <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="numeric" required>
+      </div>
+      <div class="field full">
+        <label for="email"><span class="req">*</span>אימייל</label>
+        <input id="email" name="email" type="email" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="bizName"><span class="req">*</span>שם העסק</label>
+        <input id="bizName" name="bizName" type="text" required>
+      </div>
+      <div class="field">
+        <label for="bizType"><span class="req">*</span>סוג העסק</label>
+        <select id="bizType" name="bizType" required>
+          <option value="">בחר…</option>
+          <option>מסעדה / בית קפה</option>
+          <option>מספרה / סלון יופי</option>
+          <option>חנות בגדים / בוטיק</option>
+          <option>שירות מקצועי</option>
+          <option>אחר</option>
+        </select>
+      </div>
+      <div class="field full">
+        <label for="notes">הערות (אופציונלי)</label>
+        <textarea id="notes" name="notes" placeholder="ספר לנו על החזון שלך, אם יש משהו ספציפי שחשוב לך…"></textarea>
+      </div>
+    </div>
+
+    <label class="check-row">
+      <input type="checkbox" id="terms" required>
+      <span>קראתי ואני מסכים <a href="terms.html" target="_blank">לתנאי השימוש</a> ול<a href="privacy.html" target="_blank">מדיניות הפרטיות</a>. אני מאשר יצירת קשר טלפוני וב-WhatsApp.</span>
+    </label>
+
+  </form>
+
+  <aside class="summary panel">
+    <div class="section-head">
+      <h2>סיכום ההזמנה</h2>
+      <p>הסכום הסופי לפני תשלום</p>
+    </div>
+
+    <div class="sum-row"><span class="sum-label">מסלול</span><span class="sum-val" id="sumPlan">Premium — המסלול המלא</span></div>
+    <div class="sum-row"><span class="sum-label">בסיס</span><span class="sum-val" id="sumBase">₪5,990</span></div>
+    <div class="sum-row" id="sumAddonsRow" style="display:none"><span class="sum-label">תוספות</span><span class="sum-val" id="sumAddons">—</span></div>
+    <div class="sum-row"><span class="sum-label">משלוח NFC</span><span class="sum-val">חינם</span></div>
+    <div class="sum-row"><span class="sum-label">הקמה</span><span class="sum-val">14 ימי עבודה</span></div>
+
+    <div class="sum-total"><span class="sum-total-label">סך הכל</span><span class="sum-total-val" id="sumTotal">₪5,990</span></div>
+
+    <button type="button" id="nextBtn" class="btn-next">
+      המשך לתשלום
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+
+    <p class="fineprint">בלחיצה על "המשך לתשלום" תועבר לדף תשלום מאובטח. אין חיוב עד אישור סופי.</p>
+  </aside>
+
+</main>
+
+<!-- FAQ -->
+<section id="faq" class="faq-section" aria-labelledby="faqTitle" style="background:var(--bg-section);padding:5rem var(--pad-x);border-top:1px solid var(--line)">
+  <div style="max-width:820px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:3rem">
+      <div class="hero-eyebrow">שאלות ותשובות</div>
+      <h2 id="faqTitle" style="font-family:var(--font-he);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-.025em;line-height:1.1">דברים <span style="background:linear-gradient(135deg,var(--gold-deep),var(--gold-light));-webkit-background-clip:text;background-clip:text;color:transparent">שכדאי לדעת</span>.</h2>
+    </div>
+
+    <div class="faq-wrap" style="display:flex;flex-direction:column;gap:.7rem">
+
+      <div class="faq-item" style="background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden">
+        <button class="faq-q" aria-expanded="false" aria-controls="a1" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:1.3rem 1.5rem;font-size:1rem;font-weight:600;text-align:right;color:var(--text)">
+          <span>איך מתחילים? מה השלב הראשון?</span>
+          <span class="faq-icon" aria-hidden="true" style="font-family:var(--font-en);font-weight:300;font-size:1.6rem;color:var(--gold-deep);transition:transform .3s">+</span>
+        </button>
+        <div id="a1" class="faq-a" style="display:none;padding:0 1.5rem 1.4rem;color:var(--text-2);font-size:.92rem;line-height:1.7">בוחרים מסלול, ממלאים את הפרטים בטופס, ואנחנו חוזרים תוך 24 שעות לקביעת שיחת היכרות. בשיחה ננסח יחד את החזון, ועוברים מיד לעבודה.</div>
+      </div>
+
+      <div class="faq-item" style="background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden">
+        <button class="faq-q" aria-expanded="false" aria-controls="a2" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:1.3rem 1.5rem;font-size:1rem;font-weight:600;text-align:right;color:var(--text)">
+          <span>כמה זמן לוקח לקבל את האתר?</span>
+          <span class="faq-icon" aria-hidden="true" style="font-family:var(--font-en);font-weight:300;font-size:1.6rem;color:var(--gold-deep);transition:transform .3s">+</span>
+        </button>
+        <div id="a2" class="faq-a" style="display:none;padding:0 1.5rem 1.4rem;color:var(--text-2);font-size:.92rem;line-height:1.7">אתר Essentials זה  7-10 ימי עסקים. אתר Premium זה 14-21 ימי עסקים. כולל סבבי בקרה ושינויים לפי בקשת הלקוח.</div>
+      </div>
+
+      <div class="faq-item" style="background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden">
+        <button class="faq-q" aria-expanded="false" aria-controls="a3" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:1.3rem 1.5rem;font-size:1rem;font-weight:600;text-align:right;color:var(--text)">
+          <span>הצ'יפ עמיד? מה האחריות?</span>
+          <span class="faq-icon" aria-hidden="true" style="font-family:var(--font-en);font-weight:300;font-size:1.6rem;color:var(--gold-deep);transition:transform .3s">+</span>
+        </button>
+        <div id="a3" class="faq-a" style="display:none;padding:0 1.5rem 1.4rem;color:var(--text-2);font-size:.92rem;line-height:1.7">כן — אנחנו מספקים צ'יפים תעשייתיים IP67 (עמידים במים, אבק, וטמפרטורות קיצוניות). אחריות 5 שנים על כל צ'יפ. הצ'יפים גם תומכים ב-1,000,000+ סריקות.</div>
+      </div>
+
+      <div class="faq-item" style="background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden">
+        <button class="faq-q" aria-expanded="false" aria-controls="a4" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:1.3rem 1.5rem;font-size:1rem;font-weight:600;text-align:right;color:var(--text)">
+          <span>מה כולל ניהול חודשי?</span>
+          <span class="faq-icon" aria-hidden="true" style="font-family:var(--font-en);font-weight:300;font-size:1.6rem;color:var(--gold-deep);transition:transform .3s">+</span>
+        </button>
+        <div id="a4" class="faq-a" style="display:none;padding:0 1.5rem 1.4rem;color:var(--text-2);font-size:.92rem;line-height:1.7">מענה על כל הביקורות (חיוביות ושליליות), עדכון פרופיל Google, מעקב SEO, ודוח חודשי עם תובנות.<br>הכל בעברית.<br>הכל בידי אדם מקצועי — לא עוד בוט.</div>
+      </div>
+
+      <div class="faq-item" style="background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden">
+        <button class="faq-q" aria-expanded="false" aria-controls="a5" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:1.3rem 1.5rem;font-size:1rem;font-weight:600;text-align:right;color:var(--text)">
+          <span>אפשר לבטל בכל עת?</span>
+          <span class="faq-icon" aria-hidden="true" style="font-family:var(--font-en);font-weight:300;font-size:1.6rem;color:var(--gold-deep);transition:transform .3s">+</span>
+        </button>
+        <div id="a5" class="faq-a" style="display:none;padding:0 1.5rem 1.4rem;color:var(--text-2);font-size:.92rem;line-height:1.7">כן. אין חוזה ארוך, אין קנס יציאה. הניהול החודשי בתשלום חודש-בחודש. אתה יכול להפסיק מתי שתרצה והתוכן (צ'יפים, מיתוג, קופי) נשארים שלך.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+document.querySelectorAll('.faq-q').forEach(q=>{
+  q.addEventListener('click', ()=>{
+    const a = document.getElementById(q.getAttribute('aria-controls'));
+    const open = a.style.display === 'block';
+    a.style.display = open ? 'none' : 'block';
+    q.setAttribute('aria-expanded', !open);
+    q.querySelector('.faq-icon').style.transform = open ? '' : 'rotate(45deg)';
+  });
+});
+</script>
+
+<footer>
+  <div>© 2026 Onyx Digital · <a href="https://wa.me/972506782329">050-678-2329</a> · <a href="mailto:omerdd04@gmail.com">omerdd04@gmail.com</a> · <a href="accessibility-statement.html">נגישות</a></div>
+</footer>
+
+<script>
+const PLANS = {
+  starter: {price:2990, name:'התחלה', tier:'Starter'},
+  premium: {price:5990, name:'המסלול המלא', tier:'Premium'},
+  signature: {price:9990, name:'חתימה', tier:'Signature'}
+};
+
+const plans = document.querySelectorAll('.plan');
+const addons = document.querySelectorAll('.addon');
+
+function recompute(){
+  const active = document.querySelector('.plan.active');
+  const planKey = active.dataset.plan;
+  const plan = PLANS[planKey];
+  document.getElementById('sumPlan').textContent = plan.tier + ' — ' + plan.name;
+  document.getElementById('sumBase').textContent = '₪' + plan.price.toLocaleString();
+
+  let addonTotal = 0;
+  const addonNames = [];
+  document.querySelectorAll('.addon.active').forEach(a=>{
+    addonTotal += +a.dataset.price;
+    addonNames.push(a.querySelector('.addon-text strong').textContent);
+  });
+
+  const row = document.getElementById('sumAddonsRow');
+  if(addonTotal > 0){
+    row.style.display = '';
+    document.getElementById('sumAddons').textContent = addonNames.join(' · ') + ' — +₪' + addonTotal.toLocaleString();
+  } else {
+    row.style.display = 'none';
+  }
+
+  const total = plan.price + addonTotal;
+  document.getElementById('sumTotal').textContent = '₪' + total.toLocaleString();
+}
+
+plans.forEach(p=>{
+  const handler = ()=>{
+    plans.forEach(x=>x.classList.remove('active'));
+    p.classList.add('active');
+    p.querySelector('input').checked = true;
+    recompute();
+  };
+  p.addEventListener('click', handler);
+  p.addEventListener('keydown', e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();handler()}});
+});
+
+addons.forEach(a=>{
+  const handler = ()=>{
+    a.classList.toggle('active');
+    a.setAttribute('aria-checked', a.classList.contains('active'));
+    recompute();
+  };
+  a.addEventListener('click', handler);
+  a.addEventListener('keydown', e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();handler()}});
+});
+
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  const form = document.getElementById('orderForm');
+  const required = ['fullName','phone','email','bizName','bizType'];
+  let ok = true;
+  required.forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el.value.trim()){
+      el.style.borderColor = '#d23535';
+      ok = false;
+    } else {
+      el.style.borderColor = '';
+    }
+  });
+  if(!document.getElementById('terms').checked){
+    alert('יש לאשר את תנאי השימוש');
+    return;
+  }
+  if(!ok){
+    alert('יש למלא את כל השדות המסומנים');
+    return;
+  }
+  const active = document.querySelector('.plan.active');
+  const plan = PLANS[active.dataset.plan];
+  let addonTotal = 0;
+  document.querySelectorAll('.addon.active').forEach(a=>addonTotal += +a.dataset.price);
+
+  const order = {
+    planTier: plan.tier,
+    planName: plan.name,
+    price: plan.price + addonTotal,
+    fullName: document.getElementById('fullName').value,
+    phone: document.getElementById('phone').value,
+    email: document.getElementById('email').value,
+    bizName: document.getElementById('bizName').value,
+    bizType: document.getElementById('bizType').value,
+    notes: document.getElementById('notes').value
+  };
+  sessionStorage.setItem('onyx_order', JSON.stringify(order));
+  // Fire order-started event to n8n (fire-and-forget, doesn't block navigation)
+  if(window.onyxWebhook){ window.onyxWebhook('order_started', order); }
+  window.location.href = 'payment.html';
+});
+</script>
+<script src="webhook.js"></script>
+
+</body>
+</html>
